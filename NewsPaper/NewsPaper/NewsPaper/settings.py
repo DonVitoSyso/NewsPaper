@@ -42,8 +42,11 @@ INSTALLED_APPS = [
     # D1
     'django.contrib.sites',
     'django.contrib.flatpages',
+    # D2
+    'news',
+    'accounts',
 ]
-#D1
+# D1
 SITE_ID = 1
 
 MIDDLEWARE = [
@@ -130,3 +133,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# D1 подгрузка стилей из папки static
+STATICFILES_DIRS = [
+    BASE_DIR / "static"
+]
