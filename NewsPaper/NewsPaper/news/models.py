@@ -17,18 +17,21 @@ class Author(models.Model):
         # Суммарный рейтинг каждой статьи автора умножается на 3
         postR = self.post_set.aggregate(postRating=Sum('rating'))
         pR = 0
-        pR += postR.get('postRating')
+        if postR.get('postRating') is not None:
+            pR += postR.get('postRating')
 
         # Суммарный рейтинг всех комментариев автора
         comR = self.username.comment_set.aggregate(commentRating=Sum('rating'))
         cR = 0
-        cR += comR.get('commentRating')
+        if comR.get('commentRating') is not None:
+            cR += comR.get('commentRating')
 
         # Суммарный рейтинг всех комментариев к статьям автора
         cpR = 0
         for pst in self.post_set.all():
             compostR = pst.comment_set.aggregate(commentpostRating=Sum('rating'))
-            cpR += compostR.get('commentpostRating')
+            if compostR.get('commentpostRating') is not None:
+                cpR += compostR.get('commentpostRating')
 
         self.rating = pR * 3 + cR + cpR
         self.save()
