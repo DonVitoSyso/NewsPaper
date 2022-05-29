@@ -21,4 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # D1
     path('pages/', include('django.contrib.flatpages.urls')),
+    # D3
+    path('news/', include('news.urls')),  # адреса из нашего приложения (simpleapp/urls.py) сами автоматически подключаются
 ]
