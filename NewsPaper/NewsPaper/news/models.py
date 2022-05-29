@@ -17,6 +17,7 @@ class Author(models.Model):
         # Суммарный рейтинг каждой статьи автора умножается на 3
         postR = self.post_set.aggregate(postRating=Sum('rating'))
         pR = 0
+        # Проверка на присутвие данный в запросе postR
         if postR.get('postRating') is not None:
             pR += postR.get('postRating')
 
