@@ -12,6 +12,7 @@ def current_time(format_string='%b %d %Y'):
 
 
 # D4
+# используем в пагинации на странице
 @register.simple_tag(takes_context=True) #сообщаем Django, что для работы тега требуется передать контекст
 def url_replace(context, **kwargs):
     d = context['request'].GET.copy() #скопировать все параметры текущего запроса

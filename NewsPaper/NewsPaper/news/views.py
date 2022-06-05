@@ -1,7 +1,9 @@
 from django.shortcuts import render
 # D3
 # импортируем класс получения деталей объекта
-from django.views.generic import ListView , DetailView
+from django.views.generic import (ListView, DetailView,
+                                  CreateView, UpdateView, DeleteView, # D4
+                                  )
 # импортируем класс, который говорит нам о том, что в этом представлении мы будем выводить список объектов из БД
 from .models import (Post,
                      Category, # D4
@@ -44,8 +46,68 @@ class PostSearch(ListView):
 
     def get_context_data(self, **kwargs):  # забираем отфильтрованные объекты переопределяя метод get_context_data у наследуемого класса (привет, полиморфизм, мы скучали!!!)
         context = super().get_context_data(**kwargs)
-        context['filter'] = PostFilter(self.request.GET, queryset=self.get_queryset())  # вписываем наш фильтр в контекст
+        context['filter'] = PostFilter(self.request.GET, queryset=super().get_queryset())  # вписываем наш фильтр в контекст
         context['categories'] = Category.objects.all()
         context['form'] = PostForm
-
         return context
+
+    # Переопределяем функцию получения списка товаров
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        # Сохраняем нашу фильтрацию в объекте класса,
+        # чтобы потом добавить в контекст и использовать в шаблоне.
+        self.filterset = PostFilter(self.request.GET, queryset)
+        return self.filterset.qs
+
+
+# D4. Надо указать только имя шаблона и класс формы, который мы написали в прошлом юните. Остальное он сделает за вас
+class PostCreateView(CreateView):
+    # Проверка на права доступа
+    template_name = 'new_create.html' # имя шаблона
+    form_class = PostForm # класс формы
+    model = Post # класс для работы с валидацией ниже
+
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.type = 'NEWS'
+        validated = super().form_valid(form)
+
+        return validated
+
+
+class PostUpdateView(UpdateView):
+    # Проверка на права доступа
+    template_name = 'new_create.html'
+    form_class = PostForm
+
+    # метод get_object мы используем вместо queryset, чтобы получить информацию об объекте, который мы собираемся редактировать
+    def get_object(self, **kwargs):
+        id = self.kwargs.get('pk')
+        post = Post.objects.get(pk=id)
+        post.isUpdated = True
+        return post
+
+
+class PostDeleteView(DeleteView):
+    # Проверка на права доступа
+    success_url = '/news/'
+    template_name = 'new_delete.html'
+
+    # ИЗ ЭТАЛОНА
+    def get_object(self, **kwargs):
+        id = self.kwargs.get('pk')
+        return Post.objects.get(pk=id)
+
+
+class ArticleCreateView(CreateView):
+    # Проверка на права доступа
+    template_name = 'new_create.html'
+    form_class = PostForm
+    model = Post
+
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.type = 'ARTICLE'
+        validated = super().form_valid(form)
+
+        return validated
