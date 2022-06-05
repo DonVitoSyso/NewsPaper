@@ -16,6 +16,10 @@ News
         <span> {{ news|length }} </span>
     </h3>
 
+    <table>
+        <td><a href="{% url 'search' %}">Поиск статьи</a><br></td>
+    </table>
+
     <hr>
     {% if news %} <!-- Если есть новости, то выводим таблицу с ними -->
         <table>

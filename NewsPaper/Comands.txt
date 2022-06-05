@@ -1,0 +1,82 @@
+from news.models import *
+
+user1 = User.objects.create(username='awesome', first_name='Writer')
+Author.objects.create(username=user1)
+user2 = User.objects.create(username='average', first_name='Writer2')
+Author.objects.create(username=user2)
+Category.objects.create(name='IT')
+Category.objects.create(name='SPORT')
+Category.objects.create(name='POLITIC')
+Category.objects.create(name='HUMOR')
+Post.objects.create(author=Author.objects.get(username=User.objects.get(username='awesome')), type='NW',  title='Empire strikes back', text='The Sith raise to power and set to conquer the Universe')
+
+Post.objects.create(author=Author.objects.get(username=User.objects.get(username='awesome')), type='AR',  title='Law and order', text='All hail the Emperor!')
+
+Post.objects.create(author=Author.objects.get(username=User.objects.get(username='average')), type='AR',  title='The Force is strong', text='Rebels are not ginig up.')
+
+p1 = Post.objects.get(pk=1)
+p2 = Post.objects.get(pk=2)
+p3 = Post.objects.get(pk=3)
+
+c1 = Category.objects.get(name='IT')
+c2 = Category.objects.get(name='SPORT')
+c3 = Category.objects.get(name='HUMOR')
+c4 = Category.objects.get(name='POLITIC')
+
+p1.postCategory.add(c1)
+p2.postCategory.add(c3, c2)
+p3.postCategory.add(c4)
+
+Comment.objects.create(user=User.objects.get(username='awesome'), post = Post.objects.get(pk=1), text='comment text1')
+Comment.objects.create(user=User.objects.get(username='awesome'), post = Post.objects.get(pk=2), text='comment text2')
+Comment.objects.create(user=User.objects.get(username='average'), post = Post.objects.get(pk=2), text='comment text3')
+Comment.objects.create(user=User.objects.get(username='average'), post = Post.objects.get(pk=3), text='comment text4')
+
+
+Post.objects.get(pk=1).like()
+Post.objects.get(pk=1).like()
+Post.objects.get(pk=2).like()
+Post.objects.get(pk=2).like()
+Post.objects.get(pk=1).dislike()
+Post.objects.get(pk=3).like()
+Post.objects.get(pk=3).like()
+Post.objects.get(pk=3).like()
+Post.objects.get(pk=4).like()
+Post.objects.get(pk=4).like()
+Post.objects.get(pk=4).like()
+Post.objects.get(pk=4).like()
+Post.objects.get(pk=5).like()
+Post.objects.get(pk=5).like()
+Post.objects.get(pk=5).like()
+Post.objects.get(pk=5).like()
+Post.objects.get(pk=5).like()
+Post.objects.get(pk=6).like()
+Post.objects.get(pk=6).like()
+Post.objects.get(pk=6).like()
+Post.objects.get(pk=6).like()
+
+Comment.objects.get(pk=8).like()
+Comment.objects.get(pk=8).like()
+Comment.objects.get(pk=8).like()
+Comment.objects.get(pk=8).like()
+Comment.objects.get(pk=8).like()
+Comment.objects.get(pk=8).like()
+Comment.objects.get(pk=8).like()
+Comment.objects.get(pk=1).like()
+Comment.objects.get(pk=1).like()
+Comment.objects.get(pk=1).like()
+Comment.objects.get(pk=1).dislike()
+
+Author.objects.get(username__username='Semyon').update_rating()
+Author.objects.get(username__username='Sam').update_rating()
+Author.objects.get(username__username='Semyon3').update_rating()
+Author.objects.get(username__username='sss').update_rating()
+Author.objects.get(username__username='awesome').update_rating()
+Author.objects.get(username__username='average').update_rating()
+
+Author.objects.all().order_by('-rating').values('username__username', 'rating')[0]
+
+bestP = Post.objects.all().order_by('-rating')[0]
+print(f'Date: {bestP.date.ctime()},Author: {bestP.author.username.username},Rating: {bestP.rating},Title: {bestP.title},Tesxt preview: { bestP.preview()}')
+
+Comment.objects.filter(post=bestP).values('time__date', 'user', 'rating', 'text')

@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     # D3
     'news.templatetags',
     # 'django_extensions',
+    # D4
+    'django_filters',
 ]
 # D1
 SITE_ID = 1

@@ -15,24 +15,24 @@ class Author(models.Model):
 
     def update_rating(self):
         # Суммарный рейтинг каждой статьи автора умножается на 3
-        postR = self.post_set.aggregate(postRating=Sum('rating'))
+        postR = self.post_set.aggregate(postRating=Sum('rating', default=0)) # default - Проверка на присутвие данный в запросе postR
         pR = 0
         # Проверка на присутвие данный в запросе postR
-        if postR.get('postRating') is not None:
-            pR += postR.get('postRating')
+        # if postR.get('postRating') is not None:
+        pR += postR.get('postRating')
 
         # Суммарный рейтинг всех комментариев автора
-        comR = self.username.comment_set.aggregate(commentRating=Sum('rating'))
+        comR = self.username.comment_set.aggregate(commentRating=Sum('rating', default=0))
         cR = 0
-        if comR.get('commentRating') is not None:
-            cR += comR.get('commentRating')
+        # if comR.get('commentRating') is not None:
+        cR += comR.get('commentRating')
 
         # Суммарный рейтинг всех комментариев к статьям автора
         cpR = 0
         for pst in self.post_set.all():
-            compostR = pst.comment_set.aggregate(commentpostRating=Sum('rating'))
-            if compostR.get('commentpostRating') is not None:
-                cpR += compostR.get('commentpostRating')
+            compostR = pst.comment_set.aggregate(commentpostRating=Sum('rating', default=0))
+            # if compostR.get('commentpostRating') is not None:
+            cpR += compostR.get('commentpostRating')
 
         self.rating = pR * 3 + cR + cpR
         self.save()
@@ -58,7 +58,7 @@ class Post(models.Model):
     )
     type = models.CharField(max_length=2, choices=CAT_CHOICES, default=ARTICLE)
     date = models.DateTimeField(auto_now_add=True)
-    postCategory = models.ManyToManyField(Category, through='PostCategory')
+    category = models.ManyToManyField(Category, through='PostCategory')
     text = models.TextField(default='')
     title = models.CharField(max_length=255)
     rating = models.SmallIntegerField(default=0)
