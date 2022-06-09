@@ -3,7 +3,6 @@ from .views import (NewsList, PostView, # D3
                     PostSearch, PostCreateView, PostUpdateView, PostDeleteView, ArticleCreateView, # D4
                     )
 
-
 #D3
 urlpatterns = [
     # path — означает путь. В данном случае путь ко всем товарам у нас останется пустым, позже станет ясно, почему

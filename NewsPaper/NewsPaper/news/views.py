@@ -1,17 +1,24 @@
 from django.shortcuts import render
 # D3
 # импортируем класс получения деталей объекта
-from django.views.generic import (ListView, DetailView,
-                                  CreateView, UpdateView, DeleteView, # D4
+from django.views.generic import (
+                                    ListView, DetailView,
+                                    CreateView, UpdateView, DeleteView, # D4
                                   )
 # импортируем класс, который говорит нам о том, что в этом представлении мы будем выводить список объектов из БД
-from .models import (Post,
-                     Category, # D4
+from .models import (
+                        Post,
+                        Category, # D4
                      )
 # from django.views import View
 # D4
 from .filters import PostFilter
-from .forms import PostForm
+from .forms import (
+                    PostForm,
+                    AuthorForm, #D5
+                    )
+# D5
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 # D3
@@ -24,6 +31,17 @@ class NewsList(ListView):
     # D4
     paginate_by = 10  # постраничный вывод
     form_class = PostForm  # добавляем форм класс, чтобы получать доступ к форме через метод POST
+
+    # D5
+    # метод get_context_data нужен нам для того, чтобы мы могли передать переменные в шаблон.
+    # В возвращаемом словаре context будут храниться все переменные. Ключи этого словаря и есть переменные,
+    # к которым мы сможем потом обратиться через шаблон
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filter'] = PostFilter(self.request.GET,
+                                       queryset=super().get_queryset())  # вписываем наш фильтр в контекст
+        # context['form'] = PostForm
+        return context
 
 
 # D3
@@ -111,3 +129,12 @@ class ArticleCreateView(CreateView):
         validated = super().form_valid(form)
 
         return validated
+
+
+# D5
+class UserUpdateView(LoginRequiredMixin, UpdateView):
+    template_name = 'author_update.html'
+    form_class = AuthorForm
+
+    def get_object(self, **kwargs):
+        return self.request.user

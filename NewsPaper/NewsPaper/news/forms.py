@@ -36,3 +36,11 @@ class PostForm(ModelForm):
             })
 
         return cleaned_data
+
+
+# D5
+# Создаём модельную форму Для Авторов
+class AuthorForm(ModelForm):
+    class Meta:
+        model = User
+        fields = '__all__'

@@ -50,6 +50,9 @@ INSTALLED_APPS = [
     # 'django_extensions',
     # D4
     'django_filters',
+    # D5
+    'sign',
+    'protect',
 ]
 # D1
 SITE_ID = 1
