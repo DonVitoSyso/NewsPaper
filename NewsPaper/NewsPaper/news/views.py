@@ -61,6 +61,8 @@ class PostSearch(ListView):
     template_name = 'search.html'
     context_object_name = 'posts'
     queryset = Post.objects.all()
+    # D4
+    paginate_by = 10
 
     def get_context_data(self, **kwargs):  # забираем отфильтрованные объекты переопределяя метод get_context_data у наследуемого класса (привет, полиморфизм, мы скучали!!!)
         context = super().get_context_data(**kwargs)
