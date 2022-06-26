@@ -23,4 +23,10 @@ urlpatterns = [
     path('pages/', include('django.contrib.flatpages.urls')),
     # D3
     path('news/', include('news.urls')),  # адреса из нашего приложения (simpleapp/urls.py) сами автоматически подключаются
+    # D5
+    path('sign/', include('sign.urls')),
+    path('', include('protect.urls')),
+    # D5_4
+    # Мы добавили перенаправление на ‘accounts/’ для всех URL, которые будут управляться подключенным пакетом
+    path('accounts/', include('allauth.urls')),
 ]

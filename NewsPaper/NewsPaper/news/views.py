@@ -81,7 +81,8 @@ class PostSearch(ListView):
 
 
 # D4. Надо указать только имя шаблона и класс формы, который мы написали в прошлом юните. Остальное он сделает за вас
-class PostCreateView(CreateView):
+# D5 LoginRequiredMixin в параметрах
+class PostCreateView(LoginRequiredMixin, CreateView):
     # Проверка на права доступа
     template_name = 'new_create.html' # имя шаблона
     form_class = PostForm # класс формы
@@ -95,7 +96,8 @@ class PostCreateView(CreateView):
         return validated
 
 
-class PostUpdateView(UpdateView):
+# D5 LoginRequiredMixin в параметрах
+class PostUpdateView(LoginRequiredMixin, UpdateView):
     # Проверка на права доступа
     template_name = 'new_create.html'
     form_class = PostForm
@@ -108,7 +110,8 @@ class PostUpdateView(UpdateView):
         return post
 
 
-class PostDeleteView(DeleteView):
+# D5 LoginRequiredMixin в параметрах
+class PostDeleteView(LoginRequiredMixin, DeleteView):
     # Проверка на права доступа
     success_url = '/news/'
     template_name = 'new_delete.html'
@@ -119,7 +122,8 @@ class PostDeleteView(DeleteView):
         return Post.objects.get(pk=id)
 
 
-class ArticleCreateView(CreateView):
+# D5 LoginRequiredMixin в параметрах
+class ArticleCreateView(LoginRequiredMixin, CreateView):
     # Проверка на права доступа
     template_name = 'new_create.html'
     form_class = PostForm
