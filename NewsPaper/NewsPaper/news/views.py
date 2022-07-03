@@ -63,6 +63,7 @@ class PostSearch(ListView):
     queryset = Post.objects.all()
     # D4
     paginate_by = 10
+    ordering = ['-date']
 
     def get_context_data(self, **kwargs):  # забираем отфильтрованные объекты переопределяя метод get_context_data у наследуемого класса (привет, полиморфизм, мы скучали!!!)
         context = super().get_context_data(**kwargs)
@@ -90,7 +91,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         post = form.save(commit=False)
-        post.type = 'NEWS'
+        post.type = 'NW'
         validated = super().form_valid(form)
 
         return validated
@@ -131,7 +132,7 @@ class ArticleCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         post = form.save(commit=False)
-        post.type = 'ARTICLE'
+        post.type = 'AR'
         validated = super().form_valid(form)
 
         return validated

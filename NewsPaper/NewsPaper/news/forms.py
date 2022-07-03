@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django import forms
 
 
-# Создаём модельную форму
+# Создаём модельную форму для создания статьи
 class PostForm(ModelForm):
     # тоже самое, что и метод clean
     # text = forms.CharField(min_length=20)
