@@ -7,86 +7,96 @@ News
 {% load custom_filters %}
 
 {% block content %}
+<style>
+    .news {
+        display: inline-block;
+        margin: 0 10px 10px 0; /* Отступы */
+        padding: 10px 0; /* Поля сверху и снизу */
+        width: 30%; /* Ширина */
+        vertical-align: top; /* Выравнивание по верхнему краю */
+        }
+    .str {
+        display: block;
+        text-align: left;
+        }
+    .grey {
+        color: grey;
+        text-align: left;
+        }
+    A {
+        text-decoration: none; /* Убирает подчеркивание для ссылок */
+        color: black;
+        }
+    A:hover {
+        text-decoration: underline; /* Добавляем подчеркивание при наведении курсора на ссылку */
+        color: grey;
+        }
+</style>
     <!-- Вот так выглядело использование переменной и фильтра -->
     <!-- <h3>{{ time_now|date:'M d Y' }}</h3> -->
     <!-- А вот так мы используем наш тег-->
-    <h2>{% current_time '%b %d %Y' %}</h2>
-    <h1>Все новости (всего {{filter.qs|length}})</h1>
-    <h3>The news:
-        <span> {{ news|length }} </span>
-    </h3>
+<small class="str"> Сегодня: {% current_time '%b %d %Y' %}</small>
+<small class="str"> Всего новостей ({{filter.qs|length}})</small>
 
-    <table>
-        <td>|</td>
-        <td><a href="{% url 'new_create' %}">Добавить новую новость</a><br></td>
-        <td>|</td>
-        <td><a href="{% url 'article_create' %}">Добавить новую статью</a><br></td>
-        <td>|</td>
-        <td><a href="{% url 'search' %}">Поиск поста </a><br></td>
-        <td>|</td>
-    </table>
+<h3> The news: <span> {{ news|length }} </span> </h3>
 
-    <hr>
-    {% if news %} <!-- Если есть новости, то выводим таблицу с ними -->
-        <table>
-            <tr>
-                <td>
-                    Дата публикации
-                </td>
-                <td>
-                    Тип
-                </td>
-                <td>
-                    Заголовок
-                </td>
-                <td>
-                    Сатья
-                </td>
-                <td>
-                    Автор
-                </td>
-                <td>
-                    Категория
-                </td>
-            </tr>
-            {% for new in news %}
-                <tr>
-                    <td>
-                        {{ new.date|date:'d-m-Y' }}
-                    </td>
-                    <td>
-                        <!-- выводим нормально название типа статьи, а не само обознаение ее в базе (NW, AR) -->
-                        {{ new.get_type_display }}
-                    </td>
-                    <td>
-                        {% if new.type == 'NEWS' %}
-                            <a href="{% url 'new' new.id %}">{{ new.title|censor }}</a> <!-- При нажатии на имя новости в таблице нас теперь будет перекидывать на страницу самой новости  -->
-                            <a href="{% url 'new_update' new.id %}"><u> Редактировать </u></a> <!-- добавим ссылку на редактирование новости-->
-                            <a href="{% url 'new_delete' new.id %}"><u> Удалить </u></a> <!-- добавим ссылку на удаление новости-->
-                        {% else %}
-                            <a href="{% url 'new' new.id %}">{{ new.title|censor }}</a>
-                            <a href="{% url 'article_update' new.id %}"><u> Редактировать </u></a>
-                            <a href="{% url 'article_delete' new.id %}"><u> Удалить </u></a>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {{ new.text|truncatechars:50 }}
-                    </td>
-                    <td>
-                        {{ new.author.username }}
-                    </td>
-                    <td>
-                        {% for category in new.category.all %}
+<table>
+    <td>|</td>
+    <td><a href="{% url 'new_create' %}"> Добавить новую новость </a><br></td>
+    <td>|</td>
+    <td><a href="{% url 'article_create' %}"> Добавить новую статью </a><br></td>
+    <td>|</td>
+    <td><a href="{% url 'search' %}"> Поиск поста </a><br></td>
+    <td>|</td>
+</table>
+
+<hr>
+{% if news %} <!-- Если есть новости, то выводим таблицу с ними -->
+    {% for new in news %}
+        <div class="news">
+            <strong class="str">
+                <a href="{% url 'new' new.id %}"> {{ new.title|censor }} </a> <!-- При нажатии на имя новости в таблице нас теперь будет перекидывать на страницу самой новости  -->
+            </strong>
+
+            <div class="str">
+                <small>
+                    {{ new.get_type_display }} -
+                    {% for category in new.category.all %}
                             {{ category }}
-                        {% endfor %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <h2>НОВОСТЕЙ НЕТ!</h2>
-    {% endif %}
+                    {% endfor %}
+                </small>
+            </div>
 
+            <div class="str">
+                <small>
+                    {{ new.author.username }} - {{ new.date|date:'d/m/Y' }}
+                </small>
+            </div>
+            <p>
+            <div class="grey">
+                {{ new.text|truncatechars:50 }}
+            </div>
+            <p>
+            <div class="str">
+            <sub>
+                {% if new.type == 'NEWS' %}
+                    <a href="{% url 'new_update' new.id %}"><u> Редактировать </u></a> <!-- добавим ссылку на редактирование новости-->
+                    |
+                    <a href="{% url 'new_delete' new.id %}"><u> Удалить </u></a> <!-- добавим ссылку на удаление новости-->
+                {% else %}
+                    <a href="{% url 'article_update' new.id %}"><u> Редактировать </u></a>
+                    |
+                    <a href="{% url 'article_delete' new.id %}"><u> Удалить </u></a>
+                {% endif %}
+            </sub>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <h2>НОВОСТЕЙ НЕТ!</h2>
+{% endif %}
+
+<div>
     <!-- Проверяем что поддерживается постраничный вывод -->
     {% if is_paginated %}
         <!-- Если доступна предыдущая страница, то даём ссылку на неё и самую первую страницу -->
@@ -112,5 +122,6 @@ News
             {% endif %}
         {% endif %}
     {% endif %}
+</div>
 
 {% endblock content %}

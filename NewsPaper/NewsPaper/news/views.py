@@ -29,7 +29,7 @@ class NewsList(ListView):
     # queryset = Post.objects.order_by('-dateCreated')
     ordering = ['-date']
     # D4
-    paginate_by = 10  # постраничный вывод
+    paginate_by = 9  # постраничный вывод
     form_class = PostForm  # добавляем форм класс, чтобы получать доступ к форме через метод POST
 
     # D5
@@ -62,7 +62,7 @@ class PostSearch(ListView):
     context_object_name = 'posts'
     queryset = Post.objects.all()
     # D4
-    paginate_by = 10
+    paginate_by = 6
     ordering = ['-date']
 
     def get_context_data(self, **kwargs):  # забираем отфильтрованные объекты переопределяя метод get_context_data у наследуемого класса (привет, полиморфизм, мы скучали!!!)
