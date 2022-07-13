@@ -9,6 +9,7 @@ from django.views.generic import (
 from .models import (
                         Post,
                         Category, # D4
+                        CatSub, # D6
                      )
 # from django.views import View
 # D4
@@ -19,6 +20,12 @@ from .forms import (
                     )
 # D5
 from django.contrib.auth.mixins import LoginRequiredMixin
+# D6
+from django.shortcuts import redirect
+from django.urls import resolve
+from django.contrib.auth.decorators import login_required
+from django.template.loader import render_to_string  # импортируем функцию, которая срендерит наш html в текст
+from django.core.mail import EmailMultiAlternatives  # импортируем класс для создание объекта письма с html
 
 
 # D3
@@ -145,3 +152,73 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, **kwargs):
         return self.request.user
+
+
+# D6 весь код ниже для подписки
+class PostCategory(ListView):
+    model = Post
+    # не работает почему-то
+    ordering = ['-date']
+    template_name = 'subcat/filtered.html'
+    context_object_name = 'news'
+    paginate_by = 6
+
+
+    def get_queryset(self):
+        self.id = resolve(self.request.path_info).kwargs['pk']
+        queryset = Post.objects.filter(category=Category.objects.get(id=self.id))
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filter'] = PostFilter(
+            self.request.GET, queryset=self.get_queryset())
+        context['name'] = Category.objects.get(id=self.id)
+        return context
+
+
+# Подписка пользователя в категорию новостей
+@login_required
+def subscribe_to_category(request, pk):
+    user = request.user
+    cat = Category.objects.get(id=pk)
+
+    if not cat.subscribers.filter(id=user.id).exists():
+        cat.subscribers.add(user)
+        # получаем наш созданный html
+        html = render_to_string(
+            'subcat/subscribed.html',
+            {'categories': cat, 'user': user},
+            # передаем в шаблон какие захотим переменные, в данном случае я просто передал категорию для вывода ее в письме
+        )
+        msg = EmailMultiAlternatives(
+            subject=f'На {cat} категорию подписаны',
+            from_email='newsportal@yandex.ru',
+            to=[user.email, ],
+        )
+
+        msg.attach_alternative(html, 'text/html') # добавляем html
+        try:
+            msg.send() # отсылаем
+        except Exception as e:
+            print(e)
+        return redirect('profile')
+
+    return redirect(request.META.get('HTTP_REFERER'))
+
+
+@login_required
+def unsubscribe_from_category(request, pk):
+    user = request.user
+    cat = Category.objects.get(id=pk)
+
+    if cat.subscribers.filter(id=user.id).exists():
+        cat.subscribers.remove(user)
+    return redirect('profile')
+
+
+class ProfileView(ListView):
+    model = CatSub
+    template_name = 'profile.html'
+    context_object_name = 'categories'
+# D6 - код для подписки закончен

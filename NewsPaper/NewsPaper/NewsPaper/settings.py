@@ -161,9 +161,9 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
-LOGIN_URL = '/sign/login/'
+# LOGIN_URL = '/sign/login/'
 # D5_4
-# LOGIN_URL = '/accounts/login/'
+LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 
 # В файл настроек проекта мы должны внести дополнительные параметры:

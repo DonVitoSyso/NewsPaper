@@ -1,0 +1,29 @@
+{% extends "main.html" %}
+
+{% block content %}
+<h2>Страница авторизованного пользователя {{request.user.username}}</h2>
+<div>
+    Вы подписаны на следующие категории:
+    <ul>
+        {% for category in categories %}
+            <li>
+            {% if request.user == category.get_user %}
+                {{category.get_category}}
+                <a href="{% url 'unsubscr_category' category.get_cat.id %}">
+                <button>
+                    Отписаться
+                </button>
+                </a>
+            </li>
+            {%endif%}
+        {%endfor%}
+    </ul>
+</div>
+
+<a href="{% url 'logout' %}"><button> Выйти</button></a>
+{% if is_not_author %}
+<button> <a href="sign/upgrade/"> Стать автором. </a> </button>
+{% else %}
+<button> <a href="sign/upgrade/"> Удалить из автора. </a> </button>
+{% endif %}
+{% endblock %}

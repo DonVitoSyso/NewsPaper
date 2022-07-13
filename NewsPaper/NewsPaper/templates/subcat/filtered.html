@@ -1,3 +1,4 @@
+<!-- D6 -->
 {% extends 'flatpages/default.html' %}
 
 {% block title %}
@@ -7,6 +8,7 @@ News
 {% load custom_filters %}
 
 {% block content %}
+
 
 <style>
     .news {
@@ -41,35 +43,27 @@ News
     .top { border-top:1px solid grey;}
 </style>
 
-<h4>Найдено новостей {{filter.qs|length}} по запросу: </h4>
+<h4>
+    Найдено новостей {{filter.qs|length}} по запросу:
+    <span> {{ name }} </span>
+</h4>
 <!-- Перед таблицей добавим форму для поиска -->
-<table>
-    <div class="new2">
-        <form method="GET">
-            <!-- Форму от фильтров за нас сделает django. А вот кнопку, увы придётся делать самому -->
-            {{ filter.form }}
-            <table>
-                <td></td>
-                <p></p>
-                <td><input type="submit" value="Найти"></td>
-            </table>
-        </form>
-    </div>
-</table>
 
-<!--  loop -->
-<p>
-  {{filter.type}}
-</p>
-<p>
-  {{filter.qs.type}}
-</p>
-
-{% if filter == null %} <!-- Если есть новости, то выводим таблицу с ними -->
-    <h2>НОВОСТЕЙ НЕТ!</h2>
-{% else %}
+{% if name.id %}
+<div class="new2">
+  <strong>
+    Подписаться на
+    <em> {{ name }} </em>?
+  </strong>
+  <a href="{% url 'subscr_category' name.id %}">
+    <button>
+      Подписаться
+    </button>
+  </a>
+</div>
+{% endif %}
 <table>
-    {% for new in posts %}
+    {% for new in news %}
     <tr>
         <td class="top">
             <div class="news">
@@ -117,7 +111,6 @@ News
     </tr>
     {% endfor %}
 </table>
-{% endif %}
 
 <div>
 <!-- Проверяем что поддерживается постраничный вывод -->

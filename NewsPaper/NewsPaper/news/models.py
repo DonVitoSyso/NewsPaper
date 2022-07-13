@@ -42,9 +42,15 @@ class Author(models.Model):
 class Category(models.Model):
     # D2
     name = models.CharField(max_length=255, unique=True)
+    # D6
+    # параметр не мой (эталон)
+    subscribers = models.ManyToManyField(User, through='CatSub', blank=True)
 
     def __str__(self):
         return f'{self.name}'
+    # D6
+    def get_category(self):
+        return self.name
 
 
 # Готов класс D2
@@ -123,3 +129,21 @@ class Comment(models.Model):
             return self.post.author.user
         except:
             return self.user.username
+
+
+#D6
+class CatSub(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
+    subscriber = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+
+    def get_user(self):
+        return self.subscriber
+
+    def get_category(self):
+        return self.category.name
+
+    def get_cat(self):
+        return self.category
+
+    def __str__(self):
+        return f'{self.subscriber} - {self.category.name}'

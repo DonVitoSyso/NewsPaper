@@ -2,7 +2,12 @@
 
 {% block content %}
 <h2>Страница авторизованного пользователя {{request.user.username}}</h2>
-<div> Здесь содержится персональная информация пользователя </div>
+<div>
+  Для управления своим подписками
+  <a href="{% url 'profile'  %}">
+    жмите сюда
+  </a>
+</div>
 
 <a href="{% url 'logout' %}"><button> Выйти</button></a>
 {% if is_not_author %}
