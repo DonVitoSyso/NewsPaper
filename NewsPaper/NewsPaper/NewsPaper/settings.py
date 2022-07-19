@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.flatpages',
     # D2
-    'news',
+    # 'news',
     'accounts',
     # D3
     'news.templatetags',
@@ -59,6 +59,11 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     # ... include the providers you want to enable:
     'allauth.socialaccount.providers.google',
+    # D6
+    # надо указать не имя нашего приложения, а его конфиг, чтобы всё заработало
+    'news.apps.NewsConfig',
+    # D6_5
+    'django_apscheduler',
 ]
 # D1
 SITE_ID = 1
@@ -171,8 +176,26 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = True
+#ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # Чтобы allauth распознал нашу форму как ту, что должна выполняться вместо формы по умолчанию,
-# необходимо добавить строчку в файл настроек проекта settings.py:
 ACCOUNT_FORMS = {'signup': 'sign.models.BasicSignupForm'}
+
+# D6
+EMAIL_HOST = 'smtp.yandex.ru'  # адрес сервера Яндекс-почты для всех один и тот же
+EMAIL_PORT = 465  # порт smtp сервера тоже одинаковый
+EMAIL_HOST_USER = 'vitosyso@yandex.ru'  # ваше имя пользователя, например, если ваша почта user@yandex.ru, то сюда надо писать user, иными словами, это всё то что идёт до собаки
+EMAIL_HOST_PASSWORD = 'OtivOsys'  # пароль от почты
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True  # Яндекс использует ssl, подробнее о том, что это, почитайте в дополнительных источниках, но включать его здесь обязательно
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# D6_5
+# формат даты, которую будет воспринимать наш задачник (вспоминаем модуль по фильтрам)
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+
+# если задача не выполняется за 25 секунд, то она автоматически снимается, можете поставить время побольше, но как правило, это сильно бьёт по производительности сервера
+APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds

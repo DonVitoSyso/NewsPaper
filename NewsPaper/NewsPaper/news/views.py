@@ -26,6 +26,34 @@ from django.urls import resolve
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string  # импортируем функцию, которая срендерит наш html в текст
 from django.core.mail import EmailMultiAlternatives  # импортируем класс для создание объекта письма с html
+#D6 удалить после настройкки signals
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.core.mail import mail_managers
+from django.dispatch import receiver # импортируем нужный декоратор
+
+#D6 удалить после настройкки signals
+# создаём функцию обработчик с параметрами под регистрацию сигнала
+# @receiver(post_save, sender=Post)
+# def notify_managers_appointment(sender, instance, created, **kwargs):
+#     subject = f'{instance.title} {instance.date.strftime("%d %m %Y")}'
+#
+#     # mail_managers(
+#     #     subject=subject,
+#     #     message=instance.text,
+#     # )
+#     msg = EmailMultiAlternatives(
+#         subject=subject, #kwargs['email_subject'],
+#         from_email='vitosyso@yandex.ru',
+#         to=['vitosyso@yandex.ru',] #kwargs['user_emails']  # отправляем всем из списка
+#     )
+#     # msg.attach_alternative(html, 'text/html')
+#     msg.send()
+#     print("Signal_old_type....")
+
+
+# коннектим наш сигнал к функции обработчику и указываем, к какой именно модели после сохранения привязать функцию
+# post_save.connect(notify_managers_appointment, sender=Post)
 
 
 # D3
@@ -94,13 +122,12 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     # Проверка на права доступа
     template_name = 'new_create.html' # имя шаблона
     form_class = PostForm # класс формы
-    model = Post # класс для работы с валидацией ниже
+    # model = Post # класс для работы с валидацией ниже
 
     def form_valid(self, form):
         post = form.save(commit=False)
         post.type = 'NW'
         validated = super().form_valid(form)
-
         return validated
 
 
@@ -193,7 +220,7 @@ def subscribe_to_category(request, pk):
         )
         msg = EmailMultiAlternatives(
             subject=f'На {cat} категорию подписаны',
-            from_email='newsportal@yandex.ru',
+            from_email='vitosyso@yandex.ru',
             to=[user.email, ],
         )
 

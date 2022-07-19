@@ -103,8 +103,8 @@ class PostCategory(models.Model):
     postThrough = models.ForeignKey(Post, on_delete=models.CASCADE)
     categoryThrough = models.ForeignKey(Category, on_delete=models.CASCADE)
     # из эталона
-    # def __str__(self):
-    #     return f'{self.category} -> {self.post}'
+    def __str__(self):
+        return f'{self.categoryThrough} -> {self.postThrough}'
 
 
 # Класс написан D2
