@@ -6,15 +6,15 @@
     Вы подписаны на следующие категории:
     <ul>
         {% for category in categories %}
-            <li>
             {% if request.user == category.get_user %}
+                <li>
                 {{category.get_category}}
                 <a href="{% url 'unsubscr_category' category.get_cat.id %}">
                 <button>
                     Отписаться
                 </button>
                 </a>
-            </li>
+                </li>
             {%endif%}
         {%endfor%}
     </ul>

@@ -131,7 +131,7 @@ class Comment(models.Model):
             return self.user.username
 
 
-#D6
+# D6
 class CatSub(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True)
     subscriber = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)

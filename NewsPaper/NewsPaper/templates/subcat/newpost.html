@@ -10,7 +10,7 @@
   <p>В категории: <strong>"{{category_object.name}}"</strong> есть новая новость от автора
     <strong>{{post_object.author}}</strong>.
   </p>
-  <a href="{% url 'new' post_object.id %}">
+  <a href="http://127.0.0.1:8000{% url 'new' post_object.id %}" >
     <h2>{{post_object.title}}</h2>
   </a>
   <p>{{post_object.email_preview}}</p>
