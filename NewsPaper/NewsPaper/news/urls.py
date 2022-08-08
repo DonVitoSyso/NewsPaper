@@ -8,6 +8,7 @@ from .views import (NewsList, PostView, # D3
 urlpatterns = [
     # path — означает путь. В данном случае путь ко всем товарам у нас останется пустым, позже станет ясно, почему
     # D5_4 - add news_list
+    # представление NewList запускается с гланой страницы
     path('', NewsList.as_view(), name='news_list'),  # т. к. сам по себе это класс, то нам надо представить этот класс в виде view. Для этого вызываем метод as_view
     path('<int:pk>', PostView.as_view(), name='new'),
     # D4

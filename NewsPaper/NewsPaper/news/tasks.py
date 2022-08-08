@@ -5,6 +5,8 @@ from django.core.mail.message import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from .models import Post
 from datetime import timedelta, date
+# D7
+from celery import shared_task
 
 
 # from django.utils.timezone import datetime, timedelta, timezone, timestamp
@@ -33,6 +35,9 @@ def send_emails(post_object, *args, **kwargs):
     msg.send()
 
 
+# D7 start
+@shared_task
+# D7 end
 def new_post_subscription(instance):
     # latest_post = Post.objects.all().order_by('-date')[0]
     template = 'subcat/newpost.html'
@@ -50,6 +55,9 @@ def new_post_subscription(instance):
             user_emails=user_emails)
 
 
+# D7 start
+@shared_task
+# D7 end
 def notify_subscribers_weekly():
     template = 'subcat/weekly_digest.html'
     week = 7
