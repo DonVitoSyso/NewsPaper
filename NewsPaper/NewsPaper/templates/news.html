@@ -35,8 +35,12 @@ News
     <!-- Вот так выглядело использование переменной и фильтра -->
     <!-- <h3>{{ time_now|date:'M d Y' }}</h3> -->
     <!-- А вот так мы используем наш тег-->
+<!-- D8_3 -->
+{% load cache %}
+{% cache 30 small %}
 <small class="str"> Сегодня: {% current_time '%b %d %Y' %}</small>
 <small class="str"> Всего новостей ({{filter.qs|length}})</small>
+{% endcache %}
 
 <h3> The news: <span> {{ news|length }} </span> </h3>
 

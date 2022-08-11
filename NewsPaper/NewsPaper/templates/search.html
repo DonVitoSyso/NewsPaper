@@ -41,6 +41,9 @@ News
     .top { border-top:1px solid grey;}
 </style>
 
+<!-- D8_3 -->
+{% load cache %}
+{% cache 30 search %}
 <h4>Найдено новостей {{filter.qs|length}} по запросу: </h4>
 <!-- Перед таблицей добавим форму для поиска -->
 <table>
@@ -56,6 +59,7 @@ News
         </form>
     </div>
 </table>
+{% endcache %}
 
 <!--  loop -->
 <p>
