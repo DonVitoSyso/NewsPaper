@@ -32,7 +32,8 @@ def send_emails(post_object, *args, **kwargs):
         to=kwargs['user_emails']  # отправляем всем из списка
     )
     msg.attach_alternative(html, 'text/html')
-    msg.send()
+    # для отправки писем убрать коммент внизу #
+    # msg.send()
 
 
 # D7 start

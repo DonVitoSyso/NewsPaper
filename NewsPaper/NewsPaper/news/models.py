@@ -2,6 +2,8 @@ from django.db import models
 # D2
 from django.contrib.auth.models import User
 from django.db.models import Sum
+# D8_4
+from django.core.cache import cache
 
 
 # D2
@@ -96,6 +98,11 @@ class Post(models.Model):
 
     def __str__(self):
         return f'{self.date.date()} :: {self.author} :: {self.title} {self.type}'
+
+    # D8_4
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # сначала вызываем метод родителя, чтобы объект сохранился
+        cache.delete(f'post-{self.pk}')  # затем удаляем его из кэша, чтобы сбросить его
 
 
 # Класс написан D2

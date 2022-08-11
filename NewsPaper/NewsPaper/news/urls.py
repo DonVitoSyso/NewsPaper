@@ -15,7 +15,8 @@ urlpatterns = [
     # т. к. сам по себе это класс, то нам надо представить этот класс в виде view. Для этого вызываем метод as_view
     # D8_3 начало
     path('', cache_page(60*1)(NewsList.as_view()), name='news_list'),  # кэширование гл страницы 1 мин
-    path('<int:pk>', cache_page(60*5)(PostView.as_view()), name='new'), # кэширование страницы с новостями 5 мин
+    # path('<int:pk>', cache_page(60*5)(PostView.as_view()), name='new'), # кэширование страницы с новостями 5 мин
+    path('<int:pk>', PostView.as_view(), name='new'),
     # D8_3 конец
     # D4
     path('search/', PostSearch.as_view(), name='search'),

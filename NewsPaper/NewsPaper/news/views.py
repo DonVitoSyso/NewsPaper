@@ -26,11 +26,13 @@ from django.urls import resolve
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string  # импортируем функцию, которая срендерит наш html в текст
 from django.core.mail import EmailMultiAlternatives  # импортируем класс для создание объекта письма с html
+# D8_4
+from django.core.cache import cache # импортируем наш кэш
 #D6 удалить после настройкки signals
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django.core.mail import mail_managers
-from django.dispatch import receiver # импортируем нужный декоратор
+# from django.db.models.signals import post_save
+# from django.dispatch import receiver
+# from django.core.mail import mail_managers
+# from django.dispatch import receiver # импортируем нужный декоратор
 
 #D6 удалить после настройкки signals
 # создаём функцию обработчик с параметрами под регистрацию сигнала
@@ -84,6 +86,21 @@ class PostView(DetailView):
     model = Post
     template_name = 'new.html'
     context_object_name = 'new'
+    # D8_4
+    queryset = Post.objects.all()
+
+    # D8_4
+    def get_object(self, *args, **kwargs):  # переопределяем метод получения объекта, как ни странно
+        # кэш очень похож на словарь, и метод get действует так же.
+        # Он забирает значение по ключу, если его нет, то забирает None.
+        obj = cache.get(f'post-{self.kwargs["pk"]}', None)
+
+        # если объекта нет в кэше, то получаем его и записываем в кэш
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'post-{self.kwargs["pk"]}', obj)
+
+        return obj
 
 
 # D3
